@@ -6,13 +6,15 @@ import {
   useLoadScript,
 } from '@react-google-maps/api';
 import { useLocation } from '../../context/LocationContext';
-const YOUR_GOOGLE_MAPS_API_KEY = 'YOUR_ACTUAL_GOOGLE_MAPS_API_KEY';
+import { YOUR_GOOGLE_MAPS_API_KEY } from '../../_env/env.local'; // 구글 API 키를 config 파일에서 가져옵니다.
 
 const libraries: ('places')[] = ['places'];
 
 const mapContainerStyle = {
   width: '100%',
-  height: '600px',
+  height: '500px', // 600px에서 500px로 조정
+  borderRadius: '8px',
+  overflow: 'hidden',
 };
 
 const initialCenter = {
