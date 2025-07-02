@@ -14,7 +14,7 @@ import MyPage from "./pages/Mypage/Mypage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 
-export default function App() {
+export default function App() { // 브랜치 되었을까?
   return (
     <div
       style={{
