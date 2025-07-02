@@ -6,6 +6,7 @@ import com.example.tour_backend.domain.thread.ThreadLikeRepository;
 import com.example.tour_backend.domain.thread.ThreadRepository;
 import com.example.tour_backend.domain.user.User;
 import com.example.tour_backend.domain.user.UserRepository;
+import com.example.tour_backend.dto.comment.CommentDto;
 import com.example.tour_backend.dto.thread.ThreadDto;
 import com.example.tour_backend.dto.thread.ThreadUpdateRequestDto;
 import lombok.Builder;
@@ -185,6 +186,20 @@ public class ThreadService {
         dto.setArea(thread.getArea());
         dto.setCreateDate(thread.getCreateDate());
         dto.setModifiedDate(thread.getModifiedDate());
+
+        //  댓글 리스트를 CommentDto 리스트로 변환 7/2
+        List<CommentDto> commentDtos = thread.getComments().stream().map(comment -> {
+            CommentDto commentDto = new CommentDto();
+            commentDto.setCommentId(comment.getCommentId());
+            commentDto.setThreadId(thread.getThreadId());
+            commentDto.setComment(comment.getComment());
+            commentDto.setAuthor(comment.getAuthor());
+            commentDto.setCreateDate(comment.getCreateDate());
+            commentDto.setModifiedDate(comment.getModifiedDate());
+            return commentDto;
+        }).toList();
+
+        dto.setComments(commentDtos);
 
 
 
