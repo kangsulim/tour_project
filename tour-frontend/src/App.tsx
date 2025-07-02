@@ -12,12 +12,7 @@ import ThreadDetail from './pages/Threads/ThreadDetail';
 import MyPage from "./pages/Mypage/Mypage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-<<<<<<< Updated upstream
-export default function App() { //브랜치 확인용
-
-=======
 export default function App() {
->>>>>>> Stashed changes
   return (
     <div
       style={{
