@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, deleteThread, likeThread, updateThread } from '../../services/threadApi'; 
+import { getThreadWithLikeStatus, deleteThread, likeThread, updateThread } from '../../services/threadApi'; 
 import { Thread, ThreadRequest } from '../../types/thread';
 import { AuthContext } from '../../context/AuthContext';
 import styles from './ThreadDetail.module.css';
@@ -29,12 +29,13 @@ const ThreadDetail = () => {
     });
 
   // ---------------------- [게시글 상세 조회] ----------------------
-  useEffect(() => {
-    if (!threadId) return;
+  useEffect(() => { //7/2
+    if (!threadId || !user) return;
 
-    getThreadById(Number(threadId)) // threadId 기반으로 게시글 조회
-      .then(data => {setThread(data);
-        // 수정 추가: 수정 폼도 초기화
+    getThreadWithLikeStatus(Number(threadId), user.userId) // threadId 기반으로 게시글 조회
+      .then(data => {
+        setThread(data);// 수정 추가: 수정 폼도 초기화
+        setLiked(data.likedByCurrentUser); // 초기 상태 설정!
         setEditForm({
           title: data.title,
           content: data.content,
@@ -44,7 +45,7 @@ const ThreadDetail = () => {
         });
         // TODO: 여기서 좋아요 여부 API 호출해서 liked 상태 업데이트 가능
         // 임시로 false로 세팅
-        setLiked(false);
+        //setLiked(false);
       })
       
      // 성공 시 상태에 저장
@@ -52,7 +53,7 @@ const ThreadDetail = () => {
         console.error('게시글 상세 조회 실패:', err);
         alert('게시글을 불러오는 데 실패했습니다.');
       });
-  }, [threadId]);
+  }, [threadId, user]);
 
   // ---------------------- [게시글 삭제 기능] ----------------------
   const handleDelete = async () => {
@@ -161,11 +162,11 @@ const ThreadDetail = () => {
         {thread.area && <p>여행 지역: {thread.area}</p>}
       </div>
 
-      {/* 좋아요 수 및 버튼 */}
+      {/* 좋아요 수 및 버튼 7/2 */} 
       <p>좋아요: {thread.heart}개</p>
       <button onClick={handleLike}
-       style={{ color: liked ? 'red' : 'gray', cursor: 'pointer' }}
-      >{liked ? '❤️ 좋아요 취소' : '🤍 좋아요'}
+       style={{  color: thread.likedByCurrentUser ? 'red' : 'gray' }}
+      >{thread.likedByCurrentUser ? '❤️ 좋아요 취소' : '🤍 좋아요'}
       </button>
 
       {/* 수정/삭제 버튼은 작성자 본인만 볼 수 있음 */}
