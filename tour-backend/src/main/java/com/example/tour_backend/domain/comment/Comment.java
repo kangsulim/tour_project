@@ -9,7 +9,7 @@ import com.example.tour_backend.domain.thread.Thread;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comment")// 지은
 @NoArgsConstructor
 @Getter
 @Setter
