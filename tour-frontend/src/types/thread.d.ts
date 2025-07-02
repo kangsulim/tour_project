@@ -10,6 +10,7 @@ export interface Thread { // thread dto 데이터구조와 일치
   heart: number;            // 좋아요 수
   pdfPath: string;          // 첨부 파일 경로
   commentCount: number;     // 댓글 수
+  likedByCurrentUser: boolean; //7/2
   area: string;             // 지역명
   createDate: string;       // 작성일 (ISO 8601)
   modifiedDate: string;     // 수정일

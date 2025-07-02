@@ -12,7 +12,8 @@ import ThreadDetail from './pages/Threads/ThreadDetail';
 import MyPage from "./pages/Mypage/Mypage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-export default function App() {
+
+export default function App() { //브랜치 확인
   return (
     <div
       style={{

@@ -14,10 +14,10 @@ export const createThread = async (thread: ThreadRequest): Promise<Thread> => {
 };
 
 /** 게시글 상세 조회 (Id로 조회하는거임) */
-export const getThreadById = async (threadId: number): Promise<Thread> => {
-  const response = await api.get(`/thread/${threadId}`);
-  return response.data;
-};
+// export const getThreadById = async (threadId: number): Promise<Thread> => {
+//   const response = await api.get(`/thread/${threadId}`);
+//   return response.data;
+// };
 
 /** 게시글 삭제 */
 export const deleteThread = async (threadId: number): Promise<void> => {
@@ -56,3 +56,12 @@ export const likeThread = async (threadId: number, userId: number) => {
   });
   return response.data;
 };
+
+/** 게시글 상세 조회 + 좋아요 상태 포함 조회 (userId 필요) */
+export const getThreadWithLikeStatus = async (threadId: number, userId: number): Promise<Thread> => {
+  const response = await api.get(`/thread/${threadId}/like-status`, {
+    params: { userId },
+  });
+  return response.data;
+};
+

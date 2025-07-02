@@ -5,8 +5,13 @@ export interface Comment {
   comment: string;           // 댓글 내용
   createDate: string;        // 생성일 (ISO 문자열로 전달됨)
   modifiedDate: string;      // 수정일 (수정된 경우)
+  parentId?: number;        // 대댓글이면 부모 댓글 ID 7/2
+  comments?: Comment[];     // 대댓글 리스트 (트리 구조)
 }
 // 댓글 작성 요청용 (POST 요청 body에 사용)
 export interface CommentRequest {
-  comment: string;           // 댓글 내용만 전송 (백엔드에서 작성자, threadId는 따로 처리)
+  threadId: number;
+  author: string;
+  comment: string;           
+  parentId?: number;         // 대댓글 등록 시 필요한 필드 7/2
 }

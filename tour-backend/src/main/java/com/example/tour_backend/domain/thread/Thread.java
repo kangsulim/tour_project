@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,8 +53,14 @@ public class Thread {
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
 
-//        @OneToMany(mappedBy = "thread")
-//        private List<Comment> comments;
+    //7/2 댓글
+    // mappedBy = "thread" : Comment 엔티티에서 thread 필드와 매핑
+    //cascade = CascadeType.ALL : Thread 삭제 시 댓글도 같이 삭제되도록
+    //orphanRemoval = true : 댓글이 Thread에서 분리되면 자동 삭제
+    @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+
 //
 //        @OneToMany(mappedBy = "thread")
 //        private List<Notification> notifications;

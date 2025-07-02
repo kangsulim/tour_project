@@ -13,7 +13,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThreadById, deleteThread, likeThread, updateThread } from '../../services/threadApi';
+
+import { getThreadWithLikeStatus, deleteThread, likeThread, updateThread } from '../../services/threadApi'; 
 import { Thread, ThreadRequest } from '../../types/thread';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -32,6 +33,28 @@ const ThreadDetail = () => {
     area: ''
   });
 
+
+    // 수정추가: 수정 모드 여부 상태
+    const [isEditing, setIsEditing] = useState(false);
+
+    // 수정추가: 수정 입력 폼 상태 (초기값은 비어 있음)
+    const [editForm, setEditForm] = useState<Omit<ThreadRequest, 'userId'>>({
+      title: '',
+      content: '',
+      author: '',
+      pdfPath: '',
+      area: '',
+    });
+
+  // ---------------------- [게시글 상세 조회] ----------------------
+  useEffect(() => { //7/2
+    if (!threadId || !user) return;
+
+    getThreadWithLikeStatus(Number(threadId), user.userId) // threadId 기반으로 게시글 조회
+      .then(data => {
+        setThread(data);// 수정 추가: 수정 폼도 초기화
+        setLiked(data.likedByCurrentUser); // 초기 상태 설정!
+      
   useEffect(() => {
     if (!threadId) return;
     getThreadById(Number(threadId))
@@ -44,13 +67,12 @@ const ThreadDetail = () => {
           pdfPath: data.pdfPath,
           area: data.area
         });
-        setLiked(false);
       })
       .catch(err => {
         console.error('게시글 상세 조회 실패:', err);
         alert('게시글을 불러오는 데 실패했습니다.');
       });
-  }, [threadId]);
+  }, [threadId, user]);
 
   const handleDelete = async () => {
     if (!thread) return;
@@ -113,31 +135,87 @@ const ThreadDetail = () => {
     <Box sx={{ maxWidth: '1100px', mx: 'auto', mt: 6, p: 5, bgcolor: 'white', borderRadius: 4, boxShadow: 5 }}>
       {!isEditing ? (
         <>
-          <Typography variant="h3" fontWeight={700} color="primary.main" gutterBottom>{thread.title}</Typography>
-          <Typography color="text.secondary" gutterBottom fontSize={18}>
-            작성자: {thread.author} | 작성일: {new Date(thread.createDate).toLocaleDateString()}
-          </Typography>
-          <Typography color="text.secondary" sx={{ mb: 2 }} fontSize={17}>조회수: {thread.count}</Typography>
-          <Typography sx={{ whiteSpace: 'pre-wrap', mb: 3, fontSize: '1.05rem' }}>{thread.content}</Typography>
-          {thread.pdfPath && (
-            <Typography mb={2}>
-              첨부 PDF: <Link href={thread.pdfPath} target="_blank" rel="noopener" underline="hover">{thread.pdfPath}</Link>
-            </Typography>
-          )}
-          {thread.area && <Chip label={`여행 지역: ${thread.area}`} variant="outlined" sx={{ mb: 2, fontSize: '0.95rem' }} />}
+          {/* ---------------- 게시글 상세 보기 ---------------- */}
+      {/* 제목 */}
+      <h2>{thread.title}</h2>
 
-          <Stack direction="row" alignItems="center" spacing={1} mb={2}>
-            <Typography>좋아요: {thread.heart}개</Typography>
-            <IconButton onClick={handleLike} color={liked ? 'error' : 'default'}>
-              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </IconButton>
-          </Stack>
+      {/* 작성자 및 날짜 */}
+      <p>
+        작성자: {thread.author} | 작성일: {new Date(thread.createDate).toLocaleDateString()}
+      </p>
+      <p>조회수: {thread.count}</p>
 
-          {user && user.userId === thread.userId && (
-            <Stack direction="row" spacing={2}>
-              <Button variant="contained" color="primary" onClick={() => setIsEditing(true)} sx={{ borderRadius: 8, px: 4, py: 1.5, fontSize: '1rem' }}>✏️ 수정</Button>
-              <Button variant="outlined" color="error" onClick={handleDelete} sx={{ borderRadius: 8, px: 4, py: 1.5, fontSize: '1rem' }}>🗑 삭제</Button>
-            </Stack>
+      {/* 본문 */}
+      <div className={styles.content}>
+        <p>{thread.content}</p>
+
+        {/* 첨부 PDF */}
+        {thread.pdfPath && (
+          <p>
+            첨부 PDF: <a href={thread.pdfPath} target="_blank" rel="noopener noreferrer">{thread.pdfPath}</a>
+          </p>
+        )}
+
+        {/* 지역 정보 */}
+        {thread.area && <p>여행 지역: {thread.area}</p>}
+      </div>
+
+      {/* 좋아요 수 및 버튼 7/2 */} 
+      <p>좋아요: {thread.heart}개</p>
+      <button onClick={handleLike}
+       style={{  color: thread.likedByCurrentUser ? 'red' : 'gray' }}
+      >{thread.likedByCurrentUser ? '❤️ 좋아요 취소' : '🤍 좋아요'}
+      </button>
+
+      {/* 수정/삭제 버튼은 작성자 본인만 볼 수 있음 */}
+      {user && user.userId === thread.userId && (
+        <div className={styles.btnGroup}>
+          <button onClick={() => setIsEditing(true)}>✏️ 수정</button>
+          {/*<button onClick={() => navigate(`/thread/edit/${thread.threadId}`)}>✏️ 수정</button>*/}
+          <button onClick={handleDelete}>🗑 삭제</button>
+        </div>
+      )}
+       </>
+         ):(
+          <>
+              {/* ---------------- 게시글 수정 폼 ---------------- */}
+              <h2>게시글 수정</h2>
+              <form onSubmit={handleEditSubmit} className={styles.editForm}>
+                <input
+                  type="text"
+                  name="title"
+                  value={editForm.title}
+                  onChange={handleEditChange}
+                  placeholder="제목"
+                  required
+                />
+                <textarea
+                  name="content"
+                  value={editForm.content}
+                  onChange={handleEditChange}
+                  placeholder="내용"
+                  required
+                />
+                <input
+                  type="text"
+                  name="pdfPath"
+                  value={editForm.pdfPath}
+                  onChange={handleEditChange}
+                  placeholder="PDF 경로"
+                />
+                <input
+                  type="text"
+                  name="area"
+                  value={editForm.area}
+                  onChange={handleEditChange}
+                  placeholder="여행 지역"
+                />
+                <div className={styles.btnGroup}>
+                  <button type="submit">✅ 저장</button>
+                  <button type="button" onClick={() => setIsEditing(false)}>❌ 취소</button>
+                </div>
+              </form>
+            </>
           )}
         </>
       ) : (
