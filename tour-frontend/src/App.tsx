@@ -5,15 +5,19 @@ import AuthProvider from "./context/AuthProvider";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/mainpage/mainpage";
-import PlanPage from "./pages/Tours/plan";
-import ThreadList from './pages/Threads/ThreadList';       // 게시글 목록 페이지
-import ThreadCreate from './pages/Threads/ThreadCreate';   // 게시글 작성 페이지
-import ThreadDetail from './pages/Threads/ThreadDetail';   // 게시글 상세 및 수정 페이지
+import Tour from "./pages/Tours/Tours";
+import ThreadList from './pages/Threads/ThreadList';
+import ThreadCreate from './pages/Threads/ThreadCreate';
+import ThreadDetail from './pages/Threads/ThreadDetail';
 import MyPage from "./pages/Mypage/Mypage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
+<<<<<<< Updated upstream
 export default function App() { //브랜치 확인용
 
+=======
+export default function App() {
+>>>>>>> Stashed changes
   return (
     <div
       style={{
@@ -34,45 +38,53 @@ export default function App() { //브랜치 확인용
         <LocationProvider>
           <AuthProvider>
             <Header />
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/plan" element={
-                <ProtectedRoute>
-                  <PlanPage />
-                </ProtectedRoute>
-              } />
-              <Route
-                path="/thread"
-                element={
+            
+            {/* 메인 컨텐츠 영역 - 남은 공간을 모두 차지 */}
+            <main style={{ 
+              flex: "1 0 auto", // flex-grow: 1, flex-shrink: 0, flex-basis: auto
+              display: "flex",
+              flexDirection: "column"
+            }}>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/plan" element={
                   <ProtectedRoute>
-                    <ThreadList />
+                    <Tour />
                   </ProtectedRoute>
-                }
-              />
-              {/* 게시글 작성 페이지 */}
-              <Route
-                path="/thread/create"
-                element={
+                } />
+                <Route
+                  path="/thread"
+                  element={
+                    <ProtectedRoute>
+                      <ThreadList />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/thread/create"
+                  element={
+                    <ProtectedRoute>
+                      <ThreadCreate />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/thread/:threadId"
+                  element={
+                    <ProtectedRoute>
+                      <ThreadDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/mypage" element={
                   <ProtectedRoute>
-                    <ThreadCreate />
+                    <MyPage />
                   </ProtectedRoute>
-                }
-              />
-              {/* 게시글 상세 및 수정 페이지 */}
-              <Route
-                path="/thread/:threadId"
-                element={
-                  <ProtectedRoute>
-                    <ThreadDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/mypage" element={
-                <ProtectedRoute>
-                  <MyPage />
-                </ProtectedRoute>
-              } />
-            </Routes>
+                } />
+              </Routes>
+            </main>
+            
+            {/* Footer - 항상 하단에 위치 */}
             <Footer />
           </AuthProvider>
         </LocationProvider>

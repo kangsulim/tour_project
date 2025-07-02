@@ -4,7 +4,7 @@ import {
   Card, 
   CardContent, 
   Typography, 
-  Grid, 
+  Grid, // 기존 Grid 사용
   CircularProgress,
   Alert
 } from '@mui/material';
@@ -112,9 +112,10 @@ const WeatherForecast: React.FC = () => {
         🌤️ {locationData.placeName || '선택한 위치'}의 5일 날씨 예보
       </Typography>
       
+      {/* 기존 Grid 사용 - md 값을 정수로 변경 */}
       <Grid container spacing={2}>
         {weatherData.map((day, index) => (
-          <Grid item xs={12} sm={6} md={2.4} key={day.date}>
+          <Grid item xs={12} sm={6} md={2} key={day.date}>
             <Card 
               sx={{ 
                 height: '100%',
