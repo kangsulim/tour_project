@@ -12,7 +12,7 @@ import ThreadDetail from './pages/Threads/ThreadDetail';   // 게시글 상세 �
 import MyPage from "./pages/Mypage/Mypage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-export default function App() { //브랜치 확인용
+export default function App() { //브랜치 확인
 
   return (
     <div
