@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Header } from "./components/Header";
+import Footer from "./components/Footer";
+import { LocationProvider } from "./context/LocationContext";
+import AuthProvider from "./context/AuthProvider";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainPage from "./pages/mainpage/mainpage";
+import PlanPage from "./pages/Tours/Plan";
+import ThreadPage from "./pages/Threads/ThreadList";
+import MyPage from "./pages/Mypage/Mypage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+
+export default function App() {
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div
+      style={{
+          margin: "0",
+          padding: "0",
+          width: "100%",
+          minHeight: "100vh",
+          height: "auto",
+          position: "relative",
+          overflow: "auto",
+          boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
+          overflowX: "hidden",
+      }}
+    >
+      <Router>
+        <LocationProvider>
+          <AuthProvider>
+            <Header />
+            <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/plan" element={
+                  <ProtectedRoute>
+                    <PlanPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/thread" element={<ThreadPage />} />
+                <Route path="/mypage" element={
+                  <ProtectedRoute>
+                    <MyPage />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            <Footer />
+          </AuthProvider>
+        </LocationProvider>
+      </Router>
+    </div>
+  );
 }
-
-export default App
