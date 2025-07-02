@@ -56,7 +56,7 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
     try {
       // SignupRequest 타입에 맞게 데이터 변환
       const signupRequest: SignupRequest = {
-        username: formData.email, // username으로 email 사용
+        username: formData.username, // username으로 email 사용
         password: formData.password,
         name: formData.name,
         email: formData.email,
@@ -107,6 +107,18 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
         margin="normal"
         required
         value={formData.name}
+        onChange={handleChange}
+        sx={{ mb: 2 }}
+      />
+      <TextField
+        fullWidth
+        name="username"
+        label="아이디"
+        type="username"
+        variant="outlined"
+        margin="normal"
+        required
+        value={formData.username}
         onChange={handleChange}
         sx={{ mb: 2 }}
       />

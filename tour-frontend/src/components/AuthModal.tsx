@@ -23,7 +23,7 @@ export default function AuthModal({
 }: AuthModalProps) {
   // 폼 데이터 상태 관리
   const [loginData, setLoginData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
 
@@ -69,7 +69,7 @@ export default function AuthModal({
   
     try {
       const response = await axios.post('http://localhost:8080/api/users/login', {
-        username: loginData.email,
+        username: loginData.username,
         password: loginData.password
       }, {
         headers: {
@@ -82,7 +82,7 @@ export default function AuthModal({
       console.log("로그인 성공:", response.data);
       localStorage.setItem('token', response.data.token);
       onCloseLogin(); // 이 함수에서 Header의 로그인 상태가 업데이트됨
-      setLoginData({ email: '', password: '' });
+      setLoginData({ username: '', password: '' });
     } catch (error: any) {
       console.error("로그인 실패:", error);
       if (error.code === 'ERR_NETWORK') {
@@ -108,7 +108,7 @@ export default function AuthModal({
 
     try {
       const newUser = {
-        username: signupData.email,
+        username: signupData.username,
         password: signupData.password,
         name: signupData.name,
         email: signupData.email,
@@ -186,13 +186,13 @@ export default function AuthModal({
             
             <TextField
               fullWidth
-              name="email"
-              label="이메일"
-              type="email"
+              name="username"
+              label="아이디"
+              type="username"
               variant="outlined"
               margin="normal"
               required
-              value={loginData.email}
+              value={loginData.username}
               onChange={handleLoginChange}
               sx={{ mb: 2 }}
             />

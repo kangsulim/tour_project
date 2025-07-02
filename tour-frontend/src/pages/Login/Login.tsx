@@ -71,7 +71,7 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
       <TextField
         fullWidth
         name="username"
-        label="이메일"
+        label="아이디"
         type="username"
         variant="outlined"
         margin="normal"
